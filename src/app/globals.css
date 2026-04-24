@@ -1,26 +1,300 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600;700&display=swap");
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/* ============================================================
+   KAIRO — Design System
+   Sketch-UI × Japanese Terminal aesthetic
+   ============================================================ */
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /* ── Design tokens — overridden by useTweaks hook ── */
+    --bg-primary:    #F5F0E8;
+    --bg-card:       #FFFDF7;
+    --text-primary:  #292524;
+    --text-muted:    #78716C;
+    --accent:        #B91C1C;
+    --accent-alt:    #F59E0B;
+    --border-color:  #292524;
+    --border-radius: 6px;
+    --sketch-shadow: 3px 3px 0px #292524;
+    --density-padding: 24px;
+    --brightness: 1;
+    --muted-opacity: 0.55;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html {
+    filter: brightness(var(--brightness));
+    scroll-behavior: smooth;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    font-family: var(--font-inter), 'Inter', system-ui, sans-serif;
+    min-height: 100vh;
+    transition: background-color 0.35s ease, color 0.35s ease;
+    position: relative;
+  }
+
+  /* ── Paper grain texture ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Faint grid lines (like graph paper) ── */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--border-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--border-color) 1px, transparent 1px);
+    background-size: 32px 32px;
+    opacity: 0.025;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ── Custom scrollbar ── */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--text-muted);
+    border-radius: 3px;
+    opacity: 0.4;
+  }
+  ::-webkit-scrollbar-thumb:hover { background: var(--text-primary); }
+
+  /* ── Focus ring ── */
+  *:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: var(--border-radius);
+  }
+
+  /* ── Select & input resets ── */
+  select, input, textarea {
+    background-color: var(--bg-primary);
+    color: var(--text-primary);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  }
+  select:focus, input:focus, textarea:focus {
+    box-shadow: 2px 2px 0px var(--accent);
+    border-color: var(--accent) !important;
+  }
+
+  /* ── Range input ── */
+  input[type="range"] {
+    -webkit-appearance: none;
+    appearance: none;
+    height: 4px;
+    border-radius: 2px;
+    background: var(--border-color);
+    opacity: 0.4;
+    cursor: pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--border-color);
+    cursor: pointer;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* ============================================================
+   UTILITY CLASSES
+   ============================================================ */
+@layer utilities {
+
+  /* ── Cards & borders ── */
+  .sketch-border {
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--sketch-shadow);
+    transition: box-shadow 0.2s ease, border-radius 0.3s ease;
+  }
+  .sketch-border-sm {
+    border: 1.5px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: 2px 2px 0px var(--border-color);
+  }
+  .card-base {
+    background-color: var(--bg-card);
+    border: 2px solid var(--border-color);
+    border-radius: var(--border-radius);
+    box-shadow: var(--sketch-shadow);
+    transition: background-color 0.35s ease, box-shadow 0.35s ease;
+  }
+  .card-hover:hover {
+    box-shadow: 5px 5px 0px var(--border-color);
+    transform: translateY(-1px);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  /* ── Colors ── */
+  .text-primary   { color: var(--text-primary); }
+  .text-muted     { color: var(--text-muted); }
+  .text-accent    { color: var(--accent); }
+  .bg-surface     { background-color: var(--bg-primary); }
+  .bg-card-surface{ background-color: var(--bg-card); }
+  .border-themed  { border-color: var(--border-color); }
+
+  /* ── Typography ── */
+  .font-jp        { font-family: var(--font-noto-serif-jp), 'Noto Serif JP', serif; }
+  .font-mono-data { font-family: var(--font-jetbrains-mono), 'JetBrains Mono', monospace; }
+
+  .section-header {
+    font-family: var(--font-jetbrains-mono), monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    opacity: 0.75;
+  }
+
+  .data-number {
+    font-family: var(--font-jetbrains-mono), monospace;
+    font-feature-settings: "tnum";
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* ── Gradient text ── */
+  .gradient-text {
+    background: linear-gradient(135deg, var(--text-primary) 0%, var(--accent) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ── Decorative divider ── */
+  .terminal-divider {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--text-muted);
+    opacity: 0.4;
+    font-family: var(--font-jetbrains-mono), monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    margin: 2px 0;
+  }
+  .terminal-divider::before,
+  .terminal-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border-color);
+    opacity: 0.35;
+  }
+
+  /* ── Section label badge ── */
+  .section-label-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 3px;
+    padding: 2px 8px;
+    font-family: var(--font-jetbrains-mono), monospace;
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    opacity: 0.7;
+    background-color: var(--bg-primary);
+  }
+
+  /* ── Hover lift ── */
+  .hover-lift {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+  .hover-lift:hover {
+    transform: translateY(-2px);
+    box-shadow: 5px 5px 0px var(--border-color);
+  }
+
+  /* ── Status pill colors ── */
+  .status-completed  { background: #D1FAE5; color: #065F46; border-color: #065F46; }
+  .status-in-progress{ background: #FEF3C7; color: #92400E; border-color: #92400E; }
+  .status-upcoming   { background: #EFF6FF; color: #1E3A5F; border-color: #1E3A5F; }
+
+  /* ── Achievement locked ── */
+  .badge-locked { opacity: 0.3; filter: grayscale(1) blur(0.3px); }
+
+  /* ── Animated link underline ── */
+  .link-underline { position: relative; text-decoration: none; }
+  .link-underline::after {
+    content: '';
+    position: absolute;
+    left: 0; bottom: -1px;
+    width: 0; height: 1.5px;
+    background: var(--accent);
+    transition: width 0.25s ease;
+  }
+  .link-underline:hover::after { width: 100%; }
+
+  /* ── Pulse dot ── */
+  .pulse-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulseDot 2.5s ease-in-out infinite;
+  }
+  @keyframes pulseDot {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.25; transform: scale(0.7); }
+  }
+
+  /* ── Scan line (header decoration) ── */
+  .scan-line-bg {
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0,0,0,0.012) 2px,
+      rgba(0,0,0,0.012) 4px
+    );
+  }
+
+  /* ── Tag pill ── */
+  .tag-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 10px;
+    border: 1.5px solid var(--border-color);
+    border-radius: 3px;
+    font-size: 0.7rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    background-color: var(--bg-primary);
+    color: var(--text-muted);
+    font-family: var(--font-inter), sans-serif;
+    letter-spacing: 0.02em;
+  }
+  .tag-pill:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    box-shadow: 1px 1px 0px var(--accent);
+  }
+  .tag-pill.selected {
+    background-color: var(--text-primary);
+    color: var(--bg-card);
+    border-color: var(--text-primary);
+    box-shadow: 2px 2px 0px var(--accent);
+  }
 }
