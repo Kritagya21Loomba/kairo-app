@@ -21,10 +21,11 @@ const item = {
 interface WatchTimelineProps {
   state: KairoState;
   language: "jp" | "en" | "both";
+  isDemo?: boolean;
   onUpdateCountdowns?: (updated: CountdownTarget[]) => void;
 }
 
-export function WatchTimeline({ state, language, onUpdateCountdowns }: WatchTimelineProps) {
+export function WatchTimeline({ state, language, isDemo, onUpdateCountdowns }: WatchTimelineProps) {
   const [countdownEditorOpen, setCountdownEditorOpen] = useState(false);
   const { logs } = useWatchLogs();
 
@@ -40,7 +41,7 @@ export function WatchTimeline({ state, language, onUpdateCountdowns }: WatchTime
 
     const monthCounts = new Map<string, number>();
     const monthsStr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-    
+
     // Initialize last 6 months
     const today = new Date();
     for (let i = 5; i >= 0; i--) {
@@ -75,7 +76,7 @@ export function WatchTimeline({ state, language, onUpdateCountdowns }: WatchTime
               <LineChart data={chartData} margin={{ top: 5, right: 5, bottom: 5, left: -25 }}>
                 <XAxis dataKey="month" stroke="var(--border-color)" tick={{ fill: "var(--text-muted)", fontSize: 10, fontFamily: "var(--font-mono)" }} tickLine={false} axisLine={false} />
                 <YAxis stroke="var(--border-color)" tick={{ fill: "var(--text-muted)", fontSize: 10, fontFamily: "var(--font-mono)" }} tickLine={false} axisLine={false} />
-                <Tooltip 
+                <Tooltip
                   contentStyle={{ backgroundColor: "var(--bg-card)", borderColor: "var(--border-color)", borderRadius: 0, padding: "8px", boxShadow: "2px 2px 0px var(--border-color)" }}
                   itemStyle={{ color: "var(--text-primary)", fontWeight: "bold", fontFamily: "var(--font-mono)" }}
                   labelStyle={{ color: "var(--text-muted)", fontSize: "0.7rem", marginBottom: "4px" }}
@@ -149,8 +150,8 @@ export function WatchTimeline({ state, language, onUpdateCountdowns }: WatchTime
                         entry.status === "completed"
                           ? "var(--text-primary)"
                           : entry.status === "in-progress"
-                          ? "var(--accent-alt)"
-                          : "var(--bg-card)",
+                            ? "var(--accent-alt)"
+                            : "var(--bg-card)",
                       boxShadow: "0 0 0 4px var(--bg-primary)"
                     }}
                   />
@@ -167,7 +168,7 @@ export function WatchTimeline({ state, language, onUpdateCountdowns }: WatchTime
                   >
                     {formatDate(entry.date, language === "both" ? "en" : language)}
                   </div>
-                  
+
                   {/* Hover tooltip for description */}
                   {entry.description && (
                     <div className="absolute top-14 opacity-0 group-hover:opacity-100 transition-opacity bg-[var(--bg-card)] border border-[var(--border-color)] p-2 rounded text-[0.65rem] w-48 z-20 pointer-events-none shadow-lg">
